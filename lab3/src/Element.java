@@ -18,11 +18,23 @@ public class Element {
     private final ArrayList<Route> routes = new ArrayList<>();
 
     public Element(String nameOfElement) {
-        this(nameOfElement, 1.0, Double.MAX_VALUE);
+        name = nameOfElement;
+        tNext = Double.MAX_VALUE;
+        tCurr = tNext;
+        delayMean = 1.0;
+        distribution = "";
+        id = nextId;
+        nextId++;
     }
 
     public Element(String nameOfElement, double delayMean) {
-        this(nameOfElement, delayMean, 0.0);
+        name = nameOfElement;
+        tNext = 0.0;
+        tCurr = tNext;
+        this.delayMean = delayMean;
+        distribution = "exp";
+        id = nextId;
+        nextId++;
     }
 
     public Element(String nameOfElement, double delayMean, double delayDev) {
@@ -32,7 +44,8 @@ public class Element {
         this.delayMean = delayMean;
         this.delayDev = delayDev;
         distribution = "norm";
-        id = nextId++;
+        id = nextId;
+        nextId++;
     }
 
     private static ArrayList<Route> getUnblockedRoutes(ArrayList<Route> routes, Task routedTask) {
@@ -57,18 +70,19 @@ public class Element {
     }
 
     public double getDelay() {
-        switch (distribution) {
-            case "exp":
-                return FunRand.Exponential(delayMean);
-            case "unif":
-                return FunRand.Uniform(delayMean, delayDev);
-            case "norm":
-                return FunRand.Normal(delayMean, delayDev);
-            case "erl":
-                return FunRand.Erlang(delayMean, delayDev);
-            default:
-                return delayMean;
+        if ("exp".equals(distribution)) {
+            return FunRand.Exponential(delayMean);
         }
+        if ("unif".equals(distribution)) {
+            return FunRand.Uniform(delayMean, delayDev);
+        }
+        if ("norm".equals(distribution)) {
+            return FunRand.Normal(delayMean, delayDev);
+        }
+        if ("erl".equals(distribution)) {
+            return FunRand.Erlang(delayMean, delayDev);
+        }
+        return delayMean;
     }
 
     public double getDelayMean() {
@@ -96,7 +110,6 @@ public class Element {
     }
 
     public void inAct(Task task) {
-        // Override in subclasses if needed
     }
     public void outAct() {
         quantity++;
@@ -128,24 +141,28 @@ public class Element {
     }
 
     public Route getNextRoute(Task routedTask) {
-        if (routes.isEmpty()) {
+        if (routes.size() == 0) {
             return new Route(null);
         }
-        switch (routing) {
-            case "prob":
-                return getNextRouteByProbability(routedTask);
-            case "prior":
-                return getNextRouteByPriority(routedTask);
-            case "comb":
-                return getNextRouteCombined(routedTask);
-            default:
-                throw new IllegalStateException("Unexpected value: " + routing);
+        if ("prob".equals(routing)) {
+            return getNextRouteByProbability(routedTask);
+        }
+        if ("prior".equals(routing)) {
+            return getNextRouteByPriority(routedTask);
+        }
+        if ("comb".equals(routing)) {
+            return getNextRouteCombined(routedTask);
+        } else {
+            throw new IllegalStateException("Unexpected value: " + routing);
         }
     }
 
     private Route getNextRouteByPriority(Task routedTask) {
         var unblockedRoutes = getUnblockedRoutes(routes, routedTask);
-        return unblockedRoutes.isEmpty() ? routes.get(0) : unblockedRoutes.get(0);
+        if (unblockedRoutes.size() == 0) {
+            return routes.get(0);
+        }
+        return unblockedRoutes.get(0);
     }
 
     private ArrayList<Route> findRoutesByPriority(int priority) {
@@ -167,10 +184,10 @@ public class Element {
 
     private Route getNextRouteByProbability(Task routedTask) {
         var unblockedRoutes = getUnblockedRoutes(routes, routedTask);
-        if (unblockedRoutes.isEmpty()) {
+        if (unblockedRoutes.size() == 0) {
             return routes.get(0);
         }
-        double probability = Math.random();
+        var probability = Math.random();
         var scaledProbabilities = getScaledProbabilities(unblockedRoutes);
         for (int i = 0; i < scaledProbabilities.length; i++) {
             if (probability < scaledProbabilities[i]) {
@@ -193,7 +210,7 @@ public class Element {
         }
 
         var samePriorityRoutes = findRoutesByPriority(selectedRoute.getPriority());
-        double probability = Math.random();
+        var probability = Math.random();
         var scaledProbabilities = getScaledProbabilities(samePriorityRoutes);
         for (int i = 0; i < scaledProbabilities.length; i++) {
             if (probability < scaledProbabilities[i]) {
@@ -221,7 +238,6 @@ public class Element {
     }
 
     public void doStatistics(double delta) {
-        // Override in subclasses if needed
     }
 
     public void setDistribution(String distribution) {
