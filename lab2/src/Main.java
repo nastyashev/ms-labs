@@ -36,7 +36,7 @@ public class Main {
         Create create = new Create(2.0);
         Process process1 = new Process(1.0);
         Process process2 = new Process(1.0);
-        Process process3 = new Process(2.0);
+        Process process3 = new Process(1.0);
 
         create.setName("CREATE");
         process1.setName("PROCESS-1");
@@ -45,7 +45,7 @@ public class Main {
 
         process1.setMaxqueue(5);
         process2.setMaxqueue(5);
-        process3.setMaxqueue(5);
+        process3.setMaxqueue(7);
 
         create.addNextElement(process1);
         process1.addNextElement(process2);

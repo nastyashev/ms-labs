@@ -18,7 +18,8 @@ public class Model {
     }
 
     public void simulate(double time) {
-        while (tCurr < time) {
+        int eventCount = 0;
+        while (tCurr < time && eventCount < numberOfServiceSystems + 1) {
             tNext = Double.MAX_VALUE;
             for (var element : elements) {
                 if ((tCurr < element.getTNext() || isFirstIteration) && element.getTNext() < tNext) {
@@ -43,6 +44,7 @@ public class Model {
                 }
             }
             isFirstIteration = false;
+            eventCount++;
         }
         printResult();
     }

@@ -13,7 +13,7 @@ public class BankModel extends Model {
         for (var element : elements) {
             if (element instanceof Process p) {
                 System.out.println("----" + p.getName() + "----");
-                System.out.println("Середнє завантаження = 0" + p.getWorkTime() / tCurr);
+                System.out.println("Середнє завантаження = " + p.getWorkTime() / tCurr);
                 System.out.println("Середня довжина черги = " + p.getMeanQueue() / tCurr);
                 System.out.println("Середній інтервал = " + p.getMeanLeaveInterval());
             }
@@ -23,7 +23,7 @@ public class BankModel extends Model {
         }
         System.out.println(("----Загальні показники----"));
         System.out.println("Середнє число клієнтів = " + meanClientsNum / tCurr);
-        System.out.println("Середній час перебування в банку" + getAverageTaskInSystemTime());
+        System.out.println("Середній час перебування в банку = " + getAverageTaskInSystemTime());
         System.out.println("Середній інтервал = " + getGlobalMeanLeaveInterval());
         System.out.println("Відсоток відмов = " + getTotalFailureProbability() * 100 + "%");
         System.out.println("Кількість змін смуг = " + totalSwitchedTasks);
