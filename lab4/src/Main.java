@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        int numberOfServiceSystems = 5;
+        int numberOfServiceSystems = 80000;
         simulateBank(numberOfServiceSystems);
 //        simulateClinic(numberOfServiceSystems);
     }
@@ -33,7 +33,7 @@ public class Main {
         cashierWindow2.addRoutes(new Route(dispose));
 
         var model = new BankModel(numberOfServiceSystems, create, cashierWindow1, cashierWindow2, dispose);
-        model.simulate(10000);
+        model.simulate();
     }
 
     private static void initializeCashierWindow(SwitchingProcess cashierWindow, SwitchingProcess neighbor) {
@@ -83,7 +83,7 @@ public class Main {
 
         var model = new ClinicModel(numberOfServiceSystems, create, registration, wardsTransfer, laboratoryTransfer, laboratoryRegistration,
                 laboratoryAnalysis, registrationTransfer, wardsDispose, laboratoryDispose);
-        model.simulate(10000);
+        model.simulate();
     }
 
     private static void setDistributions(Element... elements) {

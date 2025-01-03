@@ -17,9 +17,10 @@ public class Model {
         nearestEvent = 0;
     }
 
-    public void simulate(double time) {
+    public void simulate() {
+        long startTime = System.currentTimeMillis();
         int eventCount = 0;
-        while (tCurr < time && eventCount < numberOfServiceSystems + 1) {
+        while (eventCount < numberOfServiceSystems + 1) {
             tNext = Double.MAX_VALUE;
             for (var element : elements) {
                 if ((tCurr < element.getTNext() || isFirstIteration) && element.getTNext() < tNext) {
@@ -46,6 +47,8 @@ public class Model {
             isFirstIteration = false;
             eventCount++;
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println("Simulation time: " + (endTime - startTime) + " ms");
         printResult();
     }
 
